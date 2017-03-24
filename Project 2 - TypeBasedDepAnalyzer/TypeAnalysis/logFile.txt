@@ -1,0 +1,17 @@
+
+                                             CodeAnalysis
+    ==============================================================================================
+     Sat Feb 25 16:28:46 2017
+     Path: "C:\Users\rahul 3\Dropbox\Project\OOD\TypeBasedDepAnalyzer\TypeAnalysis"
+     Args: *.h, *.cpp, *.cs, /a, /r, /f
+                                                                               
+
+                          Functions Exceeding Metric Limits and Public Data
+    ==============================================================================================
+                 file name        type                               name    line    size    cplx
+    -----------------------  ----------  ---------------------------------  ------  ------  ------
+
+
+
+    searched     4 dirs
+   processed     2 files
