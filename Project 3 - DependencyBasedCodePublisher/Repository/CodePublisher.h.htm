@@ -1,0 +1,100 @@
+<!----------------------------------------------------------------------------
+     CodePublisher.h.htm
+     Rahul Kadam, CSE687 - Object Oriented Design, Spring 2017
+----------------------------------------------------------------------------->
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../theme.css">
+<script src="../myscripts.js"></script>
+</head>
+<body>
+<h3>CodePublisher.h</h3><hr/>
+<div class="indent">
+<h4>Dependencies:</h4>
+<a href="CodePublisher.cpp.htm">CodePublisher.cpp</a>
+</div>
+<hr/>
+<pre>
+#ifndef CODEPUBLISHER_H
+#define CODEPUBLISHER_H
+////////////////////////////////////////////////////////////////////////////////
+// CodePublisher.h - Main Code Publishing Logic	defined      				  //			
+// ver 1.0																	  //			
+// -----------------------------------------------------------------------	  //			
+// copyright © Rahul Kadam, 2017											  //			
+// All rights granted provided that this notice is retained					  //			
+// -----------------------------------------------------------------------	  //			
+// Language:    Visual C++, Visual Studio 2015								  //			
+// Platform:    Hp, Core i5, Windows 10										  //			
+// Application: OOD Project 3 - DependencyBasedCodePublisher ,Spring 2017	  //			
+// Source:      Jim Fawcett,  CST 4-187, 									  //			
+//              (315) 443-3948 , jfawcett@twcny.rr.com						  //			
+// Author:      Rahul Kadam, Syracuse University							  //			
+//              (315) 751-8862, rkadam@syr.edu								  //			
+////////////////////////////////////////////////////////////////////////////////
+/*
+*  Package Operations:
+*  ===================
+*  This module consists of main logic to public source code files into html files
+*  with their dependent file names as hyperlinks in html.
+*  The various operations supported here are as follows:
+*   
+*	codepublish			-&gt;	publishes a set of all files
+*	readnmodifyfile		-&gt;	reads and modifies the contents of a file
+*	publish				-&gt;	publishes contents of a file
+*	addHtmlTitle		-&gt;	adds title to html files
+*	addHtmlPrologue		-&gt;	adds html prologue
+*	addDependencies		-&gt;	adds dependencies to the html file
+*	addHeadTag			-&gt;	adds head tag
+*	addPreTag			-&gt;	adds pre tag
+*	modifyString		-&gt;	Modifies filepath to be able to open in Browser
+*	getPubFiles			-&gt;	Displays all published filenames
+*	openPubFiles		-&gt;	Opens file given in command line args in Browser 
+*	publishIndex		-&gt;	publishes Index file
+*	addTableofContents	-&gt;	adds Table of Contents
+*
+*  Required Files:
+*  ---------------
+*  - CodePublisher.h ,CodePublisher.cpp
+*
+*  Maintanence History:
+*  --------------------
+*  ver 1.0 : 4 April 2017
+*  - first release
+*
+*/
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;unordered_map&gt;
+
+using namespace std;
+
+///////////////////////////////////////////////////////////////////////
+// CodePublisher class  
+// - provides main logic to publish source code files into html files
+
+class CodePublisher
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV55')" /><div id = "myDIV55">
+private:
+	string out;					// contents of a file in a string
+	set&lt;string&gt; pub_files;		// set of all published files
+public:
+	void codepublish(set&lt;string&gt; allfiles, unordered_map&lt;string, set&lt;string&gt;&gt; depmap);
+	string readnmodifyfile(string filename);
+	string publish(string content, string filename, unordered_map&lt;string, set&lt;string&gt;&gt; depmap);
+	void addHtmlTitle(string rfilename);
+	void addHtmlPrologue(string rfilename);
+	void addDependencies(string filename, unordered_map&lt;string, set&lt;string&gt;&gt; depmap);
+	void addHeadTag();
+	void addPreTag(string content);
+	string modifyString(string str);
+	void getPubFiles();
+	void openPubFiles(string str);
+	void publishIndex(unordered_map&lt;string, set&lt;string&gt;&gt; depmap);
+	void addTableofContents(unordered_map&lt;string, set&lt;string&gt;&gt; depmap);
+};</div>
+
+#endif
+</pre>
+</body>
+</html>

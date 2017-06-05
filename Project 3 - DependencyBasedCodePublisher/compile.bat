@@ -1,0 +1,1 @@
+devenv DependencyBasedCodePublisher.sln /rebuild debug

@@ -1,0 +1,80 @@
+<!----------------------------------------------------------------------------
+     main.cpp.htm
+     Rahul Kadam, CSE687 - Object Oriented Design, Spring 2017
+----------------------------------------------------------------------------->
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../theme.css">
+<script src="../myscripts.js"></script>
+</head>
+<body>
+<h3>main.cpp</h3><hr/>
+<div class="indent">
+<h4>Dependencies:</h4>
+<a href="CodePublisher.cpp.htm">CodePublisher.cpp</a>
+<a href="CodePublisher.h.htm">CodePublisher.h</a>
+</div>
+<hr/>
+<pre>
+//////////////////////////////////////////////////////////////////////////////
+// main.cpp - Testing Code Publishing Logic					                //    
+// ver 1.0																	//	
+// -----------------------------------------------------------------------	//			
+// copyright © Rahul Kadam, 2017											//			
+// All rights granted provided that this notice is retained					//			
+// -----------------------------------------------------------------------	//			
+// Language:    Visual C++, Visual Studio 2015								//				
+// Platform:    Hp, Core i5, Windows 10										//			
+// Application: OOD Project 3 - DependencyBasedCodePublisher ,Spring 2017	//			
+// Source:      Jim Fawcett,  CST 4-187, 									//			
+//              (315) 443-3948 , jfawcett@twcny.rr.com						//			
+// Author:      Rahul Kadam, Syracuse University          				    //				
+//              (315) 751-8862, rkadam@syr.edu								//			
+//////////////////////////////////////////////////////////////////////////////
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;fstream&gt;
+#include &lt;algorithm&gt;
+
+#include "CodePublisher.h"
+
+using namespace std;
+
+#ifdef TEST_CODEPUBLISHER
+
+//----&lt; Testing Code Publisher &gt;--------------------
+int main()
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV57')" /><div id = "myDIV57">	
+	cout &lt;&lt; "\nTesting Code Publisher" &lt;&lt; endl;
+
+	CodePublisher cp;
+
+	string filename = "CodePublisher.cpp";
+
+	string content = cp.readnmodifyfile(filename);
+
+	unordered_map&lt;string, set&lt;string&gt;&gt; depmap;
+
+	depmap["CodePublisher.cpp"].insert("CodePublisher.h");
+
+	string out = cp.publish(content, filename, depmap);
+
+	ofstream fp_out;
+
+	filename += ".htm";
+	fp_out.open(filename);
+
+	fp_out &lt;&lt; out &lt;&lt; endl;
+
+	cout &lt;&lt; "    Published files:" &lt;&lt; endl;
+	cout &lt;&lt; "       -&gt; " &lt;&lt; filename &lt;&lt; endl;
+	cout &lt;&lt; "\n" &lt;&lt; endl;
+	cout &lt;&lt; "NOTE:-Check files in CodePublisher folder ...." &lt;&lt; endl;
+	
+	return 0;
+}</div>
+
+#endif</pre>
+</body>
+</html>

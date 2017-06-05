@@ -1,0 +1,267 @@
+<!----------------------------------------------------------------------------
+     CodePublisher.cpp.htm
+     Rahul Kadam, CSE687 - Object Oriented Design, Spring 2017
+----------------------------------------------------------------------------->
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../theme.css">
+<script src="../myscripts.js"></script>
+</head>
+<body>
+<h3>CodePublisher.cpp</h3><hr/>
+<div class="indent">
+<h4>Dependencies:</h4>
+<a href="CodePublisher.h.htm">CodePublisher.h</a>
+</div>
+<hr/>
+<pre>
+//////////////////////////////////////////////////////////////////////////////
+// CodePublisher.cpp - Main Code Publishing Logic declared           		//			
+// ver 1.0																	//			
+// -----------------------------------------------------------------------	//			
+// copyright © Rahul Kadam, 2017											//			
+// All rights granted provided that this notice is retained					//			
+// -----------------------------------------------------------------------	//			
+// Language:    Visual C++, Visual Studio 2015								//			
+// Platform:    Hp, Core i5, Windows 10										//			
+// Application: OOD Project 3 - DependencyBasedCodePublisher ,Spring 2017	//			
+// Source:      Jim Fawcett,  CST 4-187, 									//			
+//              (315) 443-3948 , jfawcett@twcny.rr.com						//		
+// Author:      Rahul Kadam, Syracuse University          					//			
+//              (315) 751-8862, rkadam@syr.edu								//			
+//////////////////////////////////////////////////////////////////////////////
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;fstream&gt;
+#include &lt;algorithm&gt;
+#include &lt;windows.h&gt;
+
+#include "CodePublisher.h"
+
+using namespace std;
+
+//----&lt; publishes a set of all files  &gt;--------------------
+void CodePublisher::codepublish(set&lt;string&gt; allfiles, unordered_map&lt;string, set&lt;string&gt;&gt; depmap)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV1')" /><div id = "myDIV1">	
+	string content;
+	string out;
+	ofstream fp_out;
+
+	for (string filename : allfiles)
+	{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV2')" /><div id = "myDIV2">	
+		content = readnmodifyfile(filename);
+		out = publish(content, filename,depmap);
+		int found = int(filename.rfind("\\"));
+		string rfilename = filename.substr(found + 1, filename.length());
+		rfilename = "../Repository/" + rfilename + ".htm";
+		fp_out.open(rfilename);
+		fp_out &lt;&lt; out &lt;&lt; endl;
+		pub_files.insert(rfilename);
+		fp_out.close();
+	}</div>	
+}</div>
+//----&lt; reads and modifies the contents of a file &gt;--------------------
+string CodePublisher::readnmodifyfile(string filename)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV5')" /><div id = "myDIV5">	
+	static long count = 0;
+	string str = "";
+	ifstream ifs(filename);
+	string content((istreambuf_iterator&lt;char&gt;(ifs)),
+		(istreambuf_iterator&lt;char&gt;()));
+
+	for (int i = 0; i &lt; int(content.length()); i++)
+	{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV6')" /><div id = "myDIV6">
+		if (content[i] == '&lt;')
+		{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV7')" /><div id = "myDIV7">
+			content[i] = '&';
+			content.insert(i + 1, "lt;");
+		}</div>
+		else if (content[i] == '&gt;')
+		{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV9')" /><div id = "myDIV9">
+			content[i] = '&';
+			content.insert(i + 1, "gt;");
+		}</div>
+	}</div>
+	for (int i = 0; i &lt; int(content.length()); i++)
+	{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV12')" /><div id = "myDIV12">
+		if (content[i] == '{' && content[i + 1] != '\'')
+		{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV13')" /><div id = "myDIV13">
+			count++;
+			str = "&lt;img alt = \"\" src=\"../plusik.gif\" onclick=\"myFunction('myDIV" + std::to_string(count) + "')\" /&gt;&lt;div id = \"myDIV" + std::to_string(count) + "\"&gt;";
+			content.insert(i + 1, str);
+		}</div>
+		else if (content[i] == '}' && content[i + 1] == ';')
+		{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV15')" /><div id = "myDIV15">
+			count++;
+			str = "&lt;/div&gt;";
+			content.insert(i + 2, str);
+		}</div>
+		else if (content[i] == '}' && content[i + 1] != '\'')
+		{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV17')" /><div id = "myDIV17">
+			count++;
+			str = "&lt;/div&gt;";
+			content.insert(i + 1, str);
+		}</div>
+	}</div>
+
+	return content;
+}</div>
+
+//----&lt; publishes contents of a file  &gt;--------------------
+string CodePublisher::publish(string content, string filename, unordered_map&lt;string, set&lt;string&gt;&gt; depmap)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV21')" /><div id = "myDIV21">	
+	int found = int(filename.rfind("\\"));
+	string rfilename = filename.substr(found + 1, filename.length());
+
+	addHtmlPrologue(rfilename);				//  1. Add Html Prologue
+
+	out += "&lt;html&gt;\n";						//  2. Start "html" tag
+
+	addHeadTag();							//  3. Add "head" tag
+	
+	out += "&lt;body&gt;\n";		
+	
+	addHtmlTitle(rfilename);				//  4. Add title of file
+
+	addDependencies(filename ,depmap);		//  5. Add dependecies
+
+	addPreTag(content);						//  6. Add "pre" tag with file contents
+	
+	out += "&lt;/body&gt;\n";
+	out += "&lt;/html&gt;";						//  7. Close "html" tag
+
+	return out;
+}</div>
+//----&lt; adds title to html files &gt;--------------------
+void CodePublisher::addHtmlTitle(string rfilename)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV23')" /><div id = "myDIV23">
+	out += "&lt;h3&gt;";
+	out += rfilename;						
+	out += "&lt;/h3&gt;";
+}</div>
+//----&lt; adds html prologue &gt;--------------------
+void CodePublisher::addHtmlPrologue(string rfilename)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV25')" /><div id = "myDIV25">
+	
+	out = "&lt;!----------------------------------------------------------------------------\n";
+	out += "     " + rfilename + ".htm\n";
+	out += "     Rahul Kadam, CSE687 - Object Oriented Design, Spring 2017\n";
+	out += "-----------------------------------------------------------------------------&gt;\n";
+}</div>
+//----&lt; adds head tag &gt;--------------------
+void CodePublisher::addHeadTag()
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV27')" /><div id = "myDIV27">
+	out += "&lt;head&gt;\n";
+	out += "&lt;link rel=\"stylesheet\" type=\"text/css\" href=\"../theme.css\"&gt;\n";
+	out += "&lt;script src=\"../myscripts.js\"&gt;&lt;/script&gt;\n";
+	out += "&lt;/head&gt;\n";
+}</div>
+//----&lt; adds pre tag &gt;--------------------
+void CodePublisher::addPreTag(string content)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV29')" /><div id = "myDIV29">
+	out += "&lt;pre&gt;\n";
+	out += content;
+	out += "&lt;/pre&gt;\n";
+}</div>
+
+//----&lt; adds dependencies to the html file &gt;--------------------
+void CodePublisher::addDependencies(string filename , unordered_map&lt;string, set&lt;string&gt;&gt; depmap)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV31')" /><div id = "myDIV31">
+	out += "&lt;hr/&gt;\n";
+	out += "&lt;div class=\"indent\"&gt;\n";
+	out += "&lt;h4&gt;";
+	out += "Dependencies:";
+	out += "&lt;/h4&gt;\n";
+	if (depmap.find(filename) != depmap.end())		// If dependency found
+	{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV32')" /><div id = "myDIV32">	
+		set&lt;string&gt; sset = depmap[filename];
+
+		for ( string str : sset)
+		{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV33')" /><div id = "myDIV33">	
+			int found = int(str.rfind("\\"));
+			string rfilename = str.substr(found + 1, str.length());
+			out += "&lt;a href=\"" + rfilename + ".htm" + "\"&gt;";
+			out += rfilename;
+			out += "&lt;/a&gt;\n";
+		}</div>	
+	}</div>	
+	out += "&lt;/div&gt;\n";
+	out += "&lt;hr/&gt;\n";
+}</div>
+//----&lt; Displays all published filenames &gt;--------------------
+void CodePublisher::getPubFiles()
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV37')" /><div id = "myDIV37">
+	for (string str : pub_files)
+	{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV38')" /><div id = "myDIV38">
+		cout &lt;&lt; "    -&gt; " &lt;&lt; str &lt;&lt; endl;
+	}</div>	
+}</div>
+
+//----&lt; Opens file given in command line args in Browser &gt;--------------------
+void CodePublisher::openPubFiles(string str)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV41')" /><div id = "myDIV41">	
+	string s = modifyString(str);
+	std::wstring stemp = std::wstring(s.begin(), s.end());
+	LPCWSTR sw = stemp.c_str();
+	ShellExecute(NULL, L"open", sw, NULL, NULL, SW_SHOWDEFAULT);
+}</div>
+
+//----&lt; Modifies filepath to be able to open in Browser	&gt;--------------------
+string CodePublisher::modifyString(string str)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV43')" /><div id = "myDIV43">
+	string astr = "\\\\";
+
+	for (int i = 0; i &lt; int(str.length()); i++)
+	{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV44')" /><div id = "myDIV44">
+		if (str[i] == '/')
+		{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV45')" /><div id = "myDIV45">
+			str.insert(i + 1, " ");
+			str.replace(i, 2, astr);
+		}</div>
+	}</div>
+
+	return str;
+}</div>
+//----&lt; publishes Index file &gt;--------------------
+void CodePublisher::publishIndex(unordered_map&lt;string, set&lt;string&gt;&gt; depmap)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV49')" /><div id = "myDIV49">
+	ofstream fp_out;
+
+	string rfilename = "index";
+
+	addHtmlPrologue(rfilename);				//  Add Html Prologue
+
+	out += "&lt;html&gt;\n";						//  Start "html" tag
+
+	addHeadTag();							//  Add "head" tag
+
+	out += "&lt;body&gt;\n";
+
+	addHtmlTitle(rfilename);				//  Add title of file
+
+	addTableofContents(depmap); ;			//  Add table of contents
+
+	out += "&lt;/body&gt;\n";
+	out += "&lt;/html&gt;";						//  Close "html" tag
+
+	rfilename = "../Repository/" + rfilename + ".htm";
+	fp_out.open(rfilename);
+	fp_out &lt;&lt; out &lt;&lt; endl;
+	fp_out.close();
+}</div>
+//----&lt; add Table of Contents&gt;--------------------
+void CodePublisher::addTableofContents(unordered_map&lt;string, set&lt;string&gt;&gt; depmap)
+{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV51')" /><div id = "myDIV51">	
+	for (string str : pub_files)
+	{<img alt = "" src="../plusik.gif" onclick="myFunction('myDIV52')" /><div id = "myDIV52">	
+		int found = int(str.rfind("/"));
+		string rfilename = str.substr(found + 1, str.length());
+		out += "&lt;a href=\"" + rfilename + "\"&gt;";
+		out += rfilename;
+		out += "&lt;/a&gt;\n";
+		out += "&lt;br/&gt;&lt;br/&gt;";
+	}</div>
+}</div></pre>
+</body>
+</html>
