@@ -23,9 +23,9 @@ Javascript , css and other utililies will be downloaded at “C:\CodePublisher\�
 
 ![](ExecutionTab.PNG)
 
-Demo:
+#### Demo:
 
-“Execution Tab”
+#### “Execution Tab”
 
 •	Browse button 		
 
@@ -71,7 +71,7 @@ Eg: “C:\CodePublisher\”with the corresponding folders as “Categories”:
 
  “C:\CodePublisher\HeaderFiles”  -> Category stores all html Header Files
 
-“File List Tab”
+#### “File List Tab”
 
 Assuming ../ CppCli-WPF-App/  as folder selected earlier and Upload , Publish , Lazy Download and IIS Download buttons are used.
 
@@ -84,7 +84,7 @@ and IIS Repository (“C:\CodePublisher\”).
 
 ![](IISDownload.PNG)
 
-General Use Buttons:
+#### General Use Buttons:
 
 •	Open in Browser Browse button 		
 
